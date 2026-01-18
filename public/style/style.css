@@ -222,7 +222,7 @@
   right: 8px;
 }
 
-.btns > button {
+.btns button {
     background: none;
     border: none;
     cursor: pointer;
