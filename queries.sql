@@ -7,3 +7,17 @@ CREATE TABLE books (
   review INTEGER CHECK (review BETWEEN 1 AND 5),
   comment TEXT
 );
+
+
+
+-- openlibrary_id を追加
+ALTER TABLE books
+ADD COLUMN openlibrary_id TEXT NOT NULL;
+
+-- unique 制約
+CREATE UNIQUE INDEX unique_openlibrary_book
+ON books (openlibrary_id);
+
+
+-- delete
+DELETE FROM books WHERE id = 1;

@@ -21,12 +21,6 @@ const db = new pg.Client({
 
 db.connect(); 
 
-
-// let items = [
-//   { id: 1, title: "Buy milk" },
-//   { id: 2, title: "Finish homework" },
-// ];
-
 app.get('/', async (req, res) => {
     res.render('index.ejs')
 }); 
@@ -46,19 +40,27 @@ app.post('/search', async (req, res) => {
         const result = await axios.get(`https://openlibrary.org/search.json?q=${bookName}`); 
         const firstFourResults = result.data.docs.slice(0, 4); 
         // console.log(firstFourResults);
+        const {rows: savedBooks} = await db.query('SELECT openlibrary_id, status FROM books')
+        const savedMap = new Map(
+            savedBooks.map(book => [book.openlibrary_id, book.status])
+        ); 
         res.render('index.ejs', {
-            firstFourResults
-        })
+            firstFourResults, 
+            savedMap
+        }); 
     } catch (err) {
         console.log(err);
     }
 })
 
 app.post('/books', async (req, res) => {
+    const {title, author, cover_url, status, openlibrary_id} = req.body; 
     try {
-        const {title, author, cover_URL, status} = req.body; 
-        console.log(title, author, cover_URL, status);
-        await db.query("INSERT INTO books (title, author, cover_url, status) VALUES ($1, $2, $3, $4)", [title, author, cover_URL, status]); 
+        const existing = await db.query("SELECT status FROM books WHERE openlibrary_id = $1", [openlibrary_id]); 
+        if (existing.rows.length > 0) {
+            return res.redirect('/')
+        }
+        await db.query("INSERT INTO books (title, author, cover_url, status, openlibrary_id) VALUES ($1, $2, $3, $4, $5)", [title, author, cover_url, status, openlibrary_id]); 
         res.redirect('/')
     } catch (err) {
         console.log(err);

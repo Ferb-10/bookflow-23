@@ -50,7 +50,8 @@
         <% if (locals.firstFourResults) { %>    
             <div class="search-result-box">
                 <div class="grid-container">
-                <% firstFourResults.forEach(result => { %>    
+                <% firstFourResults.forEach(result => { %>   
+                    <% const status = savedMap.get(result.cover_edition_key); %> 
                     <div class="grid-content">
                         <div class="flex-column">
                             <div class="cover">
@@ -60,15 +61,22 @@
                             <p><%= result.author_name %></p>
                         </div>
                         <div class="btns">
+                            <% if (!status) { %>
                             <form action="/books" method="POST">
                                 <input type="hidden" name="title" value="<%= result.title %>">
                                 <input type="hidden" name="author" value="<%= result.author_name %>">
-                                <input type="hidden" name="cover_URL" value="https://covers.openlibrary.org/b/olid/<%= result.cover_edition_key %>.jpg">
+                                <input type="hidden" name="cover_url" value="https://covers.openlibrary.org/b/olid/<%= result.cover_edition_key %>.jpg">
                                 <input type="hidden" name="status" value="want">
+                                <input type="hidden" name="openlibrary_id" value="<%= result.cover_edition_key %>">
                                 <button type="submit" class="btn">
                                     <span class="material-symbols-outlined"> add </span>
                                 </button>
                             </form>
+                            <% } else if (status === 'want') { %>
+                                <button><span class="material-symbols-outlined"> check </span></button>
+                            <% } else if (status === 'finished') { %>
+                                <button><span class="material-symbols-outlined"> star </span></button>
+                            <% }; %>
                         </div>
                     </div>
                 <% }); %>
