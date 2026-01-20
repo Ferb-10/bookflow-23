@@ -282,17 +282,29 @@
 
 .card-content {
     margin-left: 10px;
-    width: 25%;
+    width: 50%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
 }
 
-.card-content img {
-    width: 90px;
-    height: 100px;
+.card-content > .contents {
+    margin-left: 20px;
 }
+
+.card-content > .cover {
+    width: 86px;
+    height: 115px;
+    overflow: hidden;
+    flex-shrink: 0;  
+}
+
+.card-content > .cover > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 
 .contents h2 {
     font-weight: 400;

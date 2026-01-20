@@ -21,8 +21,23 @@ const db = new pg.Client({
 
 db.connect(); 
 
+async function getDashboardData() {
+    const {rows: wantBooks} = await db.query(`SELECT id, title, author, cover_url FROM books WHERE status = 'want' ORDER BY id DESC LIMIT 3 `); 
+    const {rows: finishedBooks} = await db.query(`SELECT id, title, author, cover_url FROM books WHERE status = 'finished' ORDER BY id DESC LIMIT 3 `); 
+    return {wantBooks, finishedBooks}
+}; 
+
 app.get('/', async (req, res) => {
-    res.render('index.ejs')
+    try {
+        const { wantBooks, finishedBooks } = await getDashboardData();
+        res.render('index.ejs', {
+            wantBooks,
+            finishedBooks
+        }); 
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Dashboard error');
+    };   
 }); 
 
 app.get('/want', (req, res) => {
@@ -37,6 +52,7 @@ app.post('/search', async (req, res) => {
     const bookName = req.body.bookName; 
     console.log(bookName);
     try {
+        const { wantBooks, finishedBooks } = await getDashboardData();
         const result = await axios.get(`https://openlibrary.org/search.json?q=${bookName}`); 
         const firstFourResults = result.data.docs.slice(0, 4); 
         // console.log(firstFourResults);
@@ -45,6 +61,8 @@ app.post('/search', async (req, res) => {
             savedBooks.map(book => [book.openlibrary_id, book.status])
         ); 
         res.render('index.ejs', {
+            wantBooks,
+            finishedBooks,
             firstFourResults, 
             savedMap
         }); 
