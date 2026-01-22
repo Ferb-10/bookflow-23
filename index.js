@@ -40,9 +40,17 @@ app.get('/', async (req, res) => {
     };   
 }); 
 
-app.get('/want', (req, res) => {
-    res.render('want.ejs')
-})
+app.get('/want', async (req, res) => {
+    try {
+        const {rows: wantBooks} = await db.query(`SELECT id, title, author, cover_url FROM books WHERE status = 'want' ORDER BY id DESC`); 
+        res.render('want.ejs', {
+            wantBooks
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Dashboard error');   
+    };   
+}); 
 
 app.get('/review', (req, res) => {
     res.render('review.ejs')
