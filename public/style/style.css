@@ -341,18 +341,22 @@
   z-index: 10;
 }
 
-.menu button {
+.menu button, .menu a {
   display: block;
   width: 100%;
   padding: 8px 12px;
   background: none;
   border: none;
   text-align: left;
+  text-decoration: none;
+  color: #000;
+  font-size: 15px;
 }
 
-.menu button:hover {
+.menu button:hover, .menu a:hover {
   background: #f2f2f2;
 }
+
 
 .hidden {
   display: none;
@@ -489,16 +493,19 @@
     z-index: 10;
 }
 
-.menu2 button {
+.menu2 button, .menu2 a {
   display: block;
   width: 100%;
   padding: 8px 12px;
   background: none;
   border: none;
   text-align: left;
+  text-decoration: none;
+  color: #000;
+  font-size: 15px;
 }
 
-.menu2 button:hover {
+.menu2 button:hover, .menu2 a:hover {
   background: #f2f2f2;
 }
 

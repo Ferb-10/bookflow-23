@@ -41,10 +41,18 @@ app.get('/', async (req, res) => {
 }); 
 
 app.get('/want', async (req, res) => {
+    const reviewBookId = req.query.review || null; 
     try {
         const {rows: wantBooks} = await db.query(`SELECT id, title, author, cover_url FROM books WHERE status = 'want' ORDER BY id DESC`); 
+        let reviewBook = null; 
+        if (reviewBookId) {
+            const result = await db.query("SELECT * FROM books WHERE id = $1", [reviewBookId]); 
+            reviewBook = result.rows[0]; 
+            console.log(reviewBook);
+        }
         res.render('want.ejs', {
-            wantBooks
+            wantBooks,
+            reviewBook
         })
     } catch (err) {
         console.log(err);
@@ -93,6 +101,9 @@ app.post('/books', async (req, res) => {
         res.status(500).send('Database error');
     }
 }); 
+
+
+
 
 
 

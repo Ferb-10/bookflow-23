@@ -105,8 +105,13 @@
                         <div class="book-item">
                             <button class="menu-btn"><span class="material-symbols-outlined"> more_horiz </span></button>
                             <div class="menu hidden">
-                                <button>Review</button>
-                                <button>Delete</button>
+                                <!-- review -->
+                                <a href="/want?review=<%= book.id %>">Review</a>
+                                <!-- delete -->
+                                <form action="/books/<%= book.id %>/Delete" method="POST">
+                                    <input type="hidden" name="bookId" value="<%= book.id %>">
+                                    <button type="submit">Delete</button>
+                                </form>  
                             </div>
                         </div>
                     </div>
@@ -142,8 +147,8 @@
                         <div class="book-item">
                             <button class="menu-btn"><span class="material-symbols-outlined"> more_horiz </span></button>
                             <div class="menu hidden">
-                                <button>Update</button>
-                                <button>Delete</button>
+                                <button>updeta</button>
+                                <button>delete</button>
                             </div>
                         </div>
                     </div>
