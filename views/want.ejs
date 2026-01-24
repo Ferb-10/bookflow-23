@@ -40,7 +40,7 @@
 <!-- reviewを押した時に表示される場合 -->
             <% if (reviewBook) { %>
             <form action="/want/<%= reviewBook.id %>/review" method="POST" class="review-setting book-detail">
-                <a href=""><span class="material-symbols-outlined"> close </span></a>
+                <a href="/want"><span class="material-symbols-outlined"> close </span></a>
                 <button type="submit" class="btn primary"><span class="material-symbols-outlined"> add_2 </span></button>
                 <div class="book-flex-container">
                     <div class="book-content">
@@ -48,19 +48,19 @@
                         <p><%= reviewBook.author %></p>
                         <div class="stars">
                             <span>
-                                <input id="r5-<%= reviewBook.id %>" type="radio" name="review-<%= reviewBook.id %>" value="5">
+                                <input id="r5-<%= reviewBook.id %>" type="radio" name="review" value="5">
                                 <label for="r5-<%= reviewBook.id %>">★</label>
 
-                                <input id="r4-<%= reviewBook.id %>" type="radio" name="review-<%= reviewBook.id %>" value="4">
+                                <input id="r4-<%= reviewBook.id %>" type="radio" name="review" value="4">
                                 <label for="r4-<%= reviewBook.id %>">★</label>
 
-                                <input id="r3-<%= reviewBook.id %>" type="radio" name="review-<%= reviewBook.id %>" value="3">
+                                <input id="r3-<%= reviewBook.id %>" type="radio" name="review" value="3">
                                 <label for="r3-<%= reviewBook.id %>">★</label>
 
-                                <input id="r2-<%= reviewBook.id %>" type="radio" name="review-<%= reviewBook.id %>" value="2">
+                                <input id="r2-<%= reviewBook.id %>" type="radio" name="review" value="2">
                                 <label for="r2-<%= reviewBook.id %>">★</label>
 
-                                <input id="r1-<%= reviewBook.id %>" type="radio" name="review-<%= reviewBook.id %>" value="1">
+                                <input id="r1-<%= reviewBook.id %>" type="radio" name="review" value="1">
                                 <label for="r1-<%= reviewBook.id %>">★</label>
                             </span>
                         </div>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="note">
                     <h2>Note:</h2>
-                     <textarea id="autoTextarea" rows="1" placeholder="take a note...."></textarea>
+                     <textarea id="autoTextarea" name="comment" rows="1" placeholder="take a note...."></textarea>
                 </div>
             </form>
             <% }; %>
@@ -94,10 +94,7 @@
                             <button class="btn"><span class="material-symbols-outlined"> more_horiz </span></button>
                             <div class="menu2 hidden">
                                 <!-- review -->
-                                <form action="/books/<%= book.id %>/reveiw" method="POST">
-                                    <input type="hidden" name="bookId" value="<%= book.id %>">
-                                    <button type="submit">Review</button>
-                                </form>
+                                <a href="/want?review=<%= book.id %>">Review</a>
                                 <!-- delete -->
                                 <form action="/books/<%= book.id %>/Delete" method="POST">
                                     <input type="hidden" name="bookId" value="<%= book.id %>">
