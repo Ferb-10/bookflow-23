@@ -4,7 +4,6 @@ import axios from 'axios';
 import pg from 'pg'; 
 import dotenv from  'dotenv'; 
 
-
 dotenv.config(); 
 const app = express(); 
 const port = 3000; 
@@ -23,13 +22,14 @@ db.connect();
 
 async function getDashboardData() {
     const {rows: wantBooks} = await db.query(`SELECT id, title, author, cover_url FROM books WHERE status = 'want' ORDER BY id DESC LIMIT 3 `); 
-    const {rows: finishedBooks} = await db.query(`SELECT id, title, author, cover_url FROM books WHERE status = 'finished' ORDER BY id DESC LIMIT 3 `); 
+    const {rows: finishedBooks} = await db.query(`SELECT id, title, author, cover_url, review FROM books WHERE status = 'finished' ORDER BY id DESC LIMIT 3 `); 
     return {wantBooks, finishedBooks}
 }; 
 
 app.get('/', async (req, res) => {
     try {
         const { wantBooks, finishedBooks } = await getDashboardData();
+
         res.render('index.ejs', {
             wantBooks,
             finishedBooks

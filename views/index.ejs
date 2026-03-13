@@ -127,20 +127,25 @@
                 </div>
                 <div class="container">
                     <!-- 最初の3つを表示する仕組み -->
+
+
+                    <% finishedBooks.forEach(book => { %>
                     <div class="card">
                         <div class="card-content">
                             <div class="cover">
-                                <img src="/img/cover.png" alt="">
+                                <img src="<%= book.cover_url || '/img/no-cover.png' %>" alt="">
                             </div>
                             <div class="contents">
-                                <h2>Atomic Habit</h2>
-                                <p>James Clear</p>
-                                <div class="review-stars small" data-rating="4">
-                                    <span class="star active">★</span>
-                                    <span class="star active">★</span>
-                                    <span class="star active">★</span>
-                                    <span class="star active">★</span>
-                                    <span class="star">★</span>
+                                <h2><%= book.title %></h2>
+                                <p><%= book.author %></p>
+                                <div class="review-stars small">
+                                    <% for(let i = 1; i <= 5; i++) { %>
+                                        <% if(i <= Number(book.review)) { %>
+                                            <span class="star active">★</span>
+                                        <% } else { %>
+                                            <span class="star">★</span>
+                                        <% } %>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -152,6 +157,10 @@
                             </div>
                         </div>
                     </div>
+                    <% }) %>
+
+
+
                 </div>
             </div>
             <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
