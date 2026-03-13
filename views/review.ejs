@@ -16,17 +16,17 @@
     <div class="app">
         <aside class="sidebar">
             <div class="logo">
-                <h1><img src="../public/img/icon.png" alt=""><span>Book</span>Flow</h1>
+                <h1><img src="/img/icon.png" alt=""><span>Book</span>Flow</h1>
             </div>
             <div class="nav-items">
                 <div class="item">
-                    <a href=""><span class="material-symbols-outlined"> search </span>Search</a>
+                    <a href="/"><span class="material-symbols-outlined"> search </span>Search</a>
                 </div>
                 <div class="item">
-                    <a href=""><span class="material-symbols-outlined"> bookmark </span>Want to Read</a>
+                    <a href="/want"><span class="material-symbols-outlined"> bookmark </span>Want to Read</a>
                 </div>
                 <div class="item">
-                    <a href=""><span class="material-symbols-outlined"> bookmark_star </span>Finished Reading</a>
+                    <a href="/review"><span class="material-symbols-outlined"> bookmark_star </span>Finished Reading</a>
                 </div>
             </div>
         </aside>
@@ -37,164 +37,67 @@
                 <p>Track your reading journey, from want-to-read to finished books.</p>
             </div>
 <!-- ****************************************************************************************************************** -->
- <!-- view section  -->
+ <!-- view を押した時に表示されるようにする -->
+            <% if(viewBook) { %>
             <div class="book-detail">
-                <a href=""><span class="material-symbols-outlined"> close </span></a>
+                <a href="/review"><span class="material-symbols-outlined"> close </span></a>
                 <div class="book-flex-container">
                     <div class="book-content">
-                        <h2>Atomic Habit</h2>
-                        <p>James Clear</p>
-                        <p id="isbm">ISBN: 978013345898</p>
-                        <div class="review-stars" data-rating="4">
-                            <span class="star active">★</span>
-                            <span class="star active">★</span>
-                            <span class="star active">★</span>
-                            <span class="star active">★</span>
-                            <span class="star">★</span>
+                        <h2><%= viewBook.title %></h2>
+                        <p><%= viewBook.author %></p>
+                        <% const rating = Number(viewBook.review) || 0 %>
+                        <div class="review-stars">
+                            <% for(let i = 1; i <= 5; i++) { %>
+                                <span class="star <%= i <= rating ? 'active' : '' %>">★</span>
+                            <% } %>
                         </div>
                     </div>
-                    <img src="../public/img/cover.png" alt="">
+                    <img src="<%= viewBook.cover_url || '/img/no-cover.png' %>" alt="">
                 </div>
                 <div class="note">
                     <h2>Note:</h2>
-                    <p>n</p>
+                    <p><%= viewBook.comment || "No comment" %></p>
                 </div>
             </div>
+            <% } %>
+<!-- ****************************************************************************************************************** -->
+<!-- updateを押した時に表示する　　　wantのreviewから拾う -->
 
 <!-- ****************************************************************************************************************** -->
-<!-- update section  -->
-            <!-- <div class="review-setting book-detail">
-                <a href=""><span class="material-symbols-outlined"> close </span></a>
-                <button type="submit" class="btn primary"><span class="material-symbols-outlined"> edit </span></button>
-                <div class="book-flex-container">
-                    <div class="book-content">
-                        <h2>Atomic Habit</h2>
-                        <p>James Clear</p>
-                        <p id="isbm">ISBN: 978013345898</p>
-                        <div class="stars">
-                            <span>
-                                <input id="r5-<%= book.id %>" type="radio" name="review-<%= book.id %>" value="5">
-                                <label for="r5-<%= book.id %>">★</label>
-
-                                <input id="r4-<%= book.id %>" type="radio" name="review-<%= book.id %>" value="4">
-                                <label for="r4-<%= book.id %>">★</label>
-
-                                <input id="r3-<%= book.id %>" type="radio" name="review-<%= book.id %>" value="3">
-                                <label for="r3-<%= book.id %>">★</label>
-
-                                <input id="r2-<%= book.id %>" type="radio" name="review-<%= book.id %>" value="2">
-                                <label for="r2-<%= book.id %>">★</label>
-
-                                <input id="r1-<%= book.id %>" type="radio" name="review-<%= book.id %>" value="1">
-                                <label for="r1-<%= book.id %>">★</label>
-                            </span>
-                        </div>
-
-                    </div>
-                    <img src="../public/img/cover.png" alt="">
-                </div>
-                <div class="note">
-                    <h2>Note:</h2>
-                    <textarea id="autoTextarea" rows="1" placeholder="take a note...."></textarea>
-                </div>
-            </div> -->
-
-<!-- ****************************************************************************************************************** -->
+<!-- finishedbookの一覧表示 -->
             <div class="want-container">
                 <div class="grid-container">
+                    <% finishedBooks.forEach(book => { %>
                     <div class="grid-content">
                         <div class="flex-column">
-                            <img src="../public/img/cover.png" alt="">
-                            <h2>Atomic Habit</h2>
-                            <p>James Clear</p>
-                            <div class="review-stars small" data-rating="4">
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star">★</span>
+                            <div class="cover">
+                                <img src="<%= book.cover_url || '/img/no-cover.png' %>" alt="">
+                            </div> 
+                            <h2><%= book.title %></h2>
+                            <p><%= book.author %></p>
+                            <% const rating = Number(book.review) || 0 %>
+                            <div class="review-stars small">
+                                <% for(let i = 1; i <= 5; i++) { %>
+                                <span class="star <%= i <= rating ? 'active' : '' %>">★</span>
+                                <% } %>
                             </div>
                         </div>
                         <div class="btns">
                             <button class="btn"><span class="material-symbols-outlined"> more_horiz </span></button>
                             <div class="menu2 hidden">
-                                <button>View</button>
+                                <a href="/review?view=<%= book.id %>">View</a>
                                 <button>Update</button>
-                                <button>Delete</button>
+                                <form action="/books/<%= book.id %>/delete" method="POST">
+                                    <button type="submit">Delete</button>
+                                </form>
                             </div>
                         </div>
                     </div>
-                    <div class="grid-content">
-                        <div class="flex-column">
-                            <img src="../public/img/cover.png" alt="">
-                            <h2>Atomic Habit</h2>
-                            <p>James Clear</p>
-                            <div class="review-stars small" data-rating="4">
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star">★</span>
-                            </div>
-                        </div>
-                        <div class="btns">
-                            <button class="btn"><span class="material-symbols-outlined"> more_horiz </span></button>
-                            <div class="menu2 hidden">
-                                <button>View</button>
-                                <button>Update</button>
-                                <button>Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid-content">
-                        <div class="flex-column">
-                            <img src="../public/img/cover.png" alt="">
-                            <h2>Atomic Habit</h2>
-                            <p>James Clear</p>
-                            <div class="review-stars small" data-rating="4">
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star">★</span>
-                            </div>
-                        </div>
-                        <div class="btns">
-                            <button class="btn"><span class="material-symbols-outlined"> more_horiz </span></button>
-                            <div class="menu2 hidden">
-                                <button>View</button>
-                                <button>Update</button>
-                                <button>Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid-content">
-                        <div class="flex-column">
-                            <img src="../public/img/cover.png" alt="">
-                            <h2>Atomic Habit</h2>
-                            <p>James Clear</p>
-                            <div class="review-stars small" data-rating="4">
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star">★</span>
-                            </div>
-                        </div>
-                        <div class="btns">
-                            <button class="btn"><span class="material-symbols-outlined"> more_horiz </span></button>
-                            <div class="menu2 hidden">
-                                <button>View</button>
-                                <button>Update</button>
-                                <button>Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                    
+                    <% }); %>   
                 </div>
             </div>
 
-
+<!-- ****************************************************************************************************************** -->
         </main>
     </div>
 </body>

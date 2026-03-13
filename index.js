@@ -40,6 +40,9 @@ app.get('/', async (req, res) => {
     };   
 }); 
 
+
+// *********************************************************************************************************
+// wantのページ
 app.get('/want', async (req, res) => {
     const reviewBookId = req.query.review || null; 
     try {
@@ -60,10 +63,40 @@ app.get('/want', async (req, res) => {
     };   
 }); 
 
-app.get('/review', (req, res) => {
-    res.render('review.ejs')
-})
 
+// *********************************************************************************************************
+// reviewのページ
+app.get('/review', async (req, res) => {
+    const viewBookId = req.query.view || null;
+    try {
+        const { rows: finishedBooks } = await db.query(`SELECT id, title, author, cover_url, review FROM books WHERE status = 'finished' ORDER BY id DESC`);
+        
+        // ここの部分を確認
+        let viewBook = null;
+        if (viewBookId) {
+            const result = await db.query(
+                "SELECT * FROM books WHERE id = $1",
+                [viewBookId]
+            );
+            viewBook = result.rows[0];
+        }
+        // ここの部分を確認　↑
+
+
+        res.render('review.ejs', {
+            finishedBooks,
+            viewBook
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Review page error');
+    }
+});
+
+
+// *********************************************************************************************************
+// 検索機能
 app.post('/search', async (req, res) => {
     const bookName = req.body.bookName; 
     console.log(bookName);
@@ -86,6 +119,8 @@ app.post('/search', async (req, res) => {
         console.log(err);
     }
 })
+
+// *********************************************************************************************************
 
 app.post('/books', async (req, res) => {
     const {title, author, cover_url, status, openlibrary_id} = req.body; 
