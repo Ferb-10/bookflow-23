@@ -149,8 +149,13 @@
                         <div class="book-item">
                             <button class="menu-btn"><span class="material-symbols-outlined"> more_horiz </span></button>
                             <div class="menu hidden">
-                                <button>updeta</button>
-                                <button>delete</button>
+                                <!-- <button>updeta</button>
+                                <button>delete</button> -->
+                                <a href="/review?view=<%= book.id %>">View</a>
+                                <a href="/review?update=<%= book.id %>">Update</a>
+                                <form action="/books/<%= book.id %>/delete" method="POST">
+                                    <button type="submit">Delete</button>
+                                </form>
                             </div>
                         </div>
                     </div>

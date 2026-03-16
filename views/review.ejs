@@ -62,7 +62,44 @@
             <% } %>
 <!-- ****************************************************************************************************************** -->
 <!-- updateを押した時に表示する　　　wantのreviewから拾う -->
+            <% if (updateBook) { %>
+            <form action="/review/<%= updateBook.id %>/update" method="POST" class="review-setting book-detail">
+                <a href="/review"><span class="material-symbols-outlined">close</span></a>
+                <button type="submit" class="btn primary"><span class="material-symbols-outlined">add_2</span></button>
+                <div class="book-flex-container">
+                    <div class="book-content">
+                        <h2><%= updateBook.title %></h2>
+                        <p><%= updateBook.author %></p>
+                        <div class="stars">
+                            <span>
+                                <input id="r5" type="radio" name="review" value="5" <%= updateBook.review == 5 ? "checked" : "" %>>
+                                <label for="r5">★</label>
 
+                                <input id="r4" type="radio" name="review" value="4" <%= updateBook.review == 4 ? "checked" : "" %>>
+                                <label for="r4">★</label>
+
+                                <input id="r3" type="radio" name="review" value="3" <%= updateBook.review == 3 ? "checked" : "" %>>
+                                <label for="r3">★</label>
+
+                                <input id="r2" type="radio" name="review" value="2" <%= updateBook.review == 2 ? "checked" : "" %>>
+                                <label for="r2">★</label>
+
+                                <input id="r1" type="radio" name="review" value="1" <%= updateBook.review == 1 ? "checked" : "" %>>
+                                <label for="r1">★</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="cover">
+                        <img src="<%= updateBook.cover_url %>">
+                    </div>
+                </div>
+                <div class="note">
+                    <h2>Note:</h2>
+                    <textarea name="comment"><%= updateBook.comment %></textarea>
+                </div>
+
+            </form>
+            <% } %>
 <!-- ****************************************************************************************************************** -->
 <!-- finishedbookの一覧表示 -->
             <div class="want-container">
@@ -86,7 +123,7 @@
                             <button class="btn"><span class="material-symbols-outlined"> more_horiz </span></button>
                             <div class="menu2 hidden">
                                 <a href="/review?view=<%= book.id %>">View</a>
-                                <button>Update</button>
+                                <a href="/review?update=<%= book.id %>">Update</a>
                                 <form action="/books/<%= book.id %>/delete" method="POST">
                                     <button type="submit">Delete</button>
                                 </form>

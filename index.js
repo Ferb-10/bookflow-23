@@ -68,10 +68,11 @@ app.get('/want', async (req, res) => {
 // reviewのページ
 app.get('/review', async (req, res) => {
     const viewBookId = req.query.view || null;
+    const updateBookId = req.query.update || null; 
     try {
         const { rows: finishedBooks } = await db.query(`SELECT id, title, author, cover_url, review FROM books WHERE status = 'finished' ORDER BY id DESC`);
         
-        // ここの部分を確認
+        // view
         let viewBook = null;
         if (viewBookId) {
             const result = await db.query(
@@ -80,12 +81,21 @@ app.get('/review', async (req, res) => {
             );
             viewBook = result.rows[0];
         }
-        // ここの部分を確認　↑
 
+        // updete
+        let updateBook = null;
+        if (updateBookId) {
+            const result = await db.query(
+                "SELECT * FROM books WHERE id = $1",
+                [updateBookId]
+            );
+            updateBook = result.rows[0];
+        }
 
         res.render('review.ejs', {
             finishedBooks,
-            viewBook
+            viewBook,
+            updateBook
         });
 
     } catch (err) {
@@ -137,7 +147,7 @@ app.post('/books', async (req, res) => {
     }
 }); 
 
-
+// review　post 
 app.post('/want/:id/review', async (req, res) => {
     const bookId = req.params.id; 
     const {review, comment} = req.body; 
@@ -151,6 +161,27 @@ app.post('/want/:id/review', async (req, res) => {
     }
 }); 
 
+// update post 
+app.post('/review/:id/update', async (req, res) => {
+    const bookId = req.params.id;
+    const review = req.body.review;
+    const comment = req.body.comment;
+
+    try {
+        await db.query(
+            `UPDATE books
+             SET review = $1, comment = $2
+             WHERE id = $3`,
+            [review, comment, bookId]
+        );
+
+        res.redirect('/review');
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Update error");
+    }
+});
 
 
 
