@@ -184,6 +184,18 @@ app.post('/review/:id/update', async (req, res) => {
 });
 
 
+// delete
+app.post("/books/:id/Delete", async (req, res) => {
+  const bookId = req.params.id;
+  try {
+    await db.query("DELETE FROM books WHERE id = $1", [bookId]);
+    res.redirect('/')
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error deleting book");
+  }
+});
+
 
 
 
