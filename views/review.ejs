@@ -45,6 +45,7 @@
                     <div class="book-content">
                         <h2><%= viewBook.title %></h2>
                         <p><%= viewBook.author %></p>
+                        <p>Date added：<%= viewBook.review_date.toLocaleDateString('sv-SE') %></p>
                         <% const rating = Number(viewBook.review) || 0 %>
                         <div class="review-stars">
                             <% for(let i = 1; i <= 5; i++) { %>
@@ -70,6 +71,7 @@
                     <div class="book-content">
                         <h2><%= updateBook.title %></h2>
                         <p><%= updateBook.author %></p>
+                        <p>Date added：<%= updateBook.review_date.toLocaleDateString('sv-SE') %></p>
                         <div class="stars">
                             <span>
                                 <input id="r5" type="radio" name="review" value="5" <%= updateBook.review == 5 ? "checked" : "" %>>

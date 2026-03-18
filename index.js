@@ -161,7 +161,7 @@ app.post('/want/:id/review', async (req, res) => {
     const {review, comment} = req.body; 
     console.log(review, comment);
     try {
-        await db.query("UPDATE books SET status = 'finished', review = $1, comment = $2 WHERE id = $3", [review, comment, bookId]); 
+        await db.query("UPDATE books SET status = 'finished', review = $1, comment = $2, review_date = CURRENT_DATE WHERE id = $3", [review, comment, bookId]); 
         res.redirect('/')
     } catch (err) {
         console.log(err);
