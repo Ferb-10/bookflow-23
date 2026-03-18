@@ -30,9 +30,17 @@ app.get('/', async (req, res) => {
     try {
         const { wantBooks, finishedBooks } = await getDashboardData();
 
+        // 件数だけ取得
+        const { rows: wantCountResult } = await db.query(`SELECT COUNT(*) FROM books WHERE status = 'want'`);
+        const { rows: finishedCountResult } = await db.query(`SELECT COUNT(*) FROM books WHERE status = 'finished'`);
+        const wantCount = wantCountResult[0].count;
+        const finishedCount = finishedCountResult[0].count;
+
         res.render('index.ejs', {
             wantBooks,
-            finishedBooks
+            finishedBooks,
+            wantCount,
+            finishedCount
         }); 
     } catch (err) {
         console.log(err);
