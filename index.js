@@ -153,9 +153,9 @@ app.post('/search', async (req, res) => {
         const result = await axios.get(`https://openlibrary.org/search.json?q=${bookName}`); 
         const firstFourResults = result.data.docs.slice(0, 4); 
         // console.log(firstFourResults);
-        const {rows: savedBooks} = await db.query('SELECT openlibrary_id, status FROM books')
+        const {rows: savedBooks} = await db.query('SELECT work_id, status FROM books')
         const savedMap = new Map(
-            savedBooks.map(book => [book.openlibrary_id, book.status])
+            savedBooks.map(book => [book.work_id, book.status])
         ); 
         res.render('index.ejs', {
             wantBooks,
@@ -172,9 +172,9 @@ app.post('/search', async (req, res) => {
 
 // 本の追加
 app.post('/books', async (req, res) => {
-    const {title, author, cover_url, status, openlibrary_id} = req.body; 
+    const {title, author, work_id, cover_edition_id, status} = req.body;
     try {
-        const existing = await db.query("SELECT status FROM books WHERE openlibrary_id = $1", [openlibrary_id]); 
+        const existing = await db.query("SELECT status FROM books WHERE work_id = $1", [work_id]); 
         if (existing.rows.length > 0) {
             return res.redirect('/')
         }
@@ -182,13 +182,16 @@ app.post('/books', async (req, res) => {
         // ⭐ ここが追加ポイント
         let localCoverPath = null;
 
-        if (cover_url) {
-            const filename = `${openlibrary_id}.jpg`; // 重複防止
-            localCoverPath = await downloadImage(cover_url, filename);
+
+
+        if (cover_edition_id) {
+            const coverUrl = `https://covers.openlibrary.org/b/olid/${cover_edition_id}.jpg`;
+            const filename = `${cover_edition_id}.jpg`; // 重複防止
+            localCoverPath = await downloadImage(coverUrl, filename);
         }
 
         // ⭐ DBにはローカルパスを保存
-        await db.query("INSERT INTO books (title, author, cover_url, status, openlibrary_id) VALUES ($1, $2, $3, $4, $5)", [title, author, localCoverPath, status, openlibrary_id]); 
+        await db.query("INSERT INTO books (title, author, work_id, cover_edition_id, cover_url, status) VALUES ($1, $2, $3, $4, $5, $6)", [title, author, work_id, cover_edition_id, localCoverPath, status]); 
         res.redirect('/')
     } catch (err) {
         console.log(err);
@@ -234,7 +237,7 @@ app.post('/review/:id/update', async (req, res) => {
 
 
 // delete
-app.post("/books/:id/Delete", async (req, res) => {
+app.post("/books/:id/delete", async (req, res) => {
   const bookId = req.params.id;
   try {
     await db.query("DELETE FROM books WHERE id = $1", [bookId]);

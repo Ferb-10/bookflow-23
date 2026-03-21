@@ -67,7 +67,7 @@
 
                     </div>
                     <div class="cover">
-                        <img src="<%= reviewBook.cover_url %>" alt="">
+                        <img src="<%= reviewBook.cover_url || '/img/no-cover.png' %>" alt="">
                     </div>
                 </div>
                 <div class="note">
@@ -84,7 +84,7 @@
                     <div class="grid-content">
                         <div class="flex-column">
                             <div class="cover">
-                                <img src="<%= book.cover_url %>" alt="">
+                                <img src="<%= book.cover_url || '/img/no-cover.png' %>" alt="">
                             </div>
                             <h2><%= book.title %></h2>
                             <p><%= book.author %></p>
