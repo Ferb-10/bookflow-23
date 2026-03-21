@@ -240,8 +240,26 @@ app.post('/review/:id/update', async (req, res) => {
 app.post("/books/:id/delete", async (req, res) => {
   const bookId = req.params.id;
   try {
-    await db.query("DELETE FROM books WHERE id = $1", [bookId]);
-    res.redirect('/')
+     // ① cover_url取得
+        const result = await db.query(
+            "SELECT cover_url FROM books WHERE id = $1",
+            [bookId]
+        );
+
+        const coverUrl = result.rows[0]?.cover_url;
+
+        // ② ファイル削除（存在する場合のみ）
+        if (coverUrl && coverUrl !== '/img/no-cover.png') {
+            const filePath = path.join("public", coverUrl);
+
+            // ファイルが存在する場合のみ削除
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+
+        await db.query("DELETE FROM books WHERE id = $1", [bookId]);
+        res.redirect('/')
   } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting book");
