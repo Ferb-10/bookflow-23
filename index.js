@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import axios from 'axios'; 
 import pg from 'pg'; 
 import dotenv from  'dotenv'; 
+import fs from 'fs'; 
+import path from 'path'; 
 
 dotenv.config(); 
 const app = express(); 
@@ -25,6 +27,34 @@ async function getDashboardData() {
     const {rows: finishedBooks} = await db.query(`SELECT id, title, author, cover_url, review FROM books WHERE status = 'finished' ORDER BY id DESC LIMIT 3 `); 
     return {wantBooks, finishedBooks}
 }; 
+
+// 画像保存関数
+async function downloadImage(imageUrl, filename) {
+    const dir = "public/covers";
+
+    // フォルダなければ作る
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+
+    const filePath = path.join(dir, filename);
+
+    const response = await axios({
+        url: imageUrl,
+        method: "GET",
+        responseType: "stream"
+    });
+
+    const writer = fs.createWriteStream(filePath);
+
+    response.data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+        writer.on("finish", () => resolve(`/covers/${filename}`));
+        writer.on("error", reject);
+    });
+}
+
 
 app.get('/', async (req, res) => {
     try {
@@ -140,6 +170,7 @@ app.post('/search', async (req, res) => {
 
 // *********************************************************************************************************
 
+// 本の追加
 app.post('/books', async (req, res) => {
     const {title, author, cover_url, status, openlibrary_id} = req.body; 
     try {
@@ -147,7 +178,17 @@ app.post('/books', async (req, res) => {
         if (existing.rows.length > 0) {
             return res.redirect('/')
         }
-        await db.query("INSERT INTO books (title, author, cover_url, status, openlibrary_id) VALUES ($1, $2, $3, $4, $5)", [title, author, cover_url, status, openlibrary_id]); 
+
+        // ⭐ ここが追加ポイント
+        let localCoverPath = null;
+
+        if (cover_url) {
+            const filename = `${openlibrary_id}.jpg`; // 重複防止
+            localCoverPath = await downloadImage(cover_url, filename);
+        }
+
+        // ⭐ DBにはローカルパスを保存
+        await db.query("INSERT INTO books (title, author, cover_url, status, openlibrary_id) VALUES ($1, $2, $3, $4, $5)", [title, author, localCoverPath, status, openlibrary_id]); 
         res.redirect('/')
     } catch (err) {
         console.log(err);
