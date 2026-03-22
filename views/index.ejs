@@ -29,7 +29,9 @@
                 </div>
             </div>
         <!-- Search -->
-        <% if (locals.firstFourResults) { %>    
+        <% if (error) { %>
+            <p class="error"><%= error %></p> 
+        <% } else if (locals.firstFourResults && firstFourResults.length > 0) { %>    
             <div class="search-result-box">
                 <div class="grid-container">
                 <% firstFourResults.forEach(result => { %>   

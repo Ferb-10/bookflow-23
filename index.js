@@ -55,22 +55,32 @@ async function downloadImage(imageUrl, filename) {
     });
 }
 
+async function getBookCounts() {
+    const { rows: wantCountResult } = await db.query(
+        `SELECT COUNT(*) FROM books WHERE status = 'want'`
+    );
+    const { rows: finishedCountResult } = await db.query(
+        `SELECT COUNT(*) FROM books WHERE status = 'finished'`
+    );
+
+    return {
+        wantCount: wantCountResult[0].count,
+        finishedCount: finishedCountResult[0].count
+    };
+}
+
+
 
 app.get('/', async (req, res) => {
     try {
         const { wantBooks, finishedBooks } = await getDashboardData();
-
-        // 件数だけ取得
-        const { rows: wantCountResult } = await db.query(`SELECT COUNT(*) FROM books WHERE status = 'want'`);
-        const { rows: finishedCountResult } = await db.query(`SELECT COUNT(*) FROM books WHERE status = 'finished'`);
-        const wantCount = wantCountResult[0].count;
-        const finishedCount = finishedCountResult[0].count;
-
+        const { wantCount, finishedCount } = await getBookCounts();
         res.render('index.ejs', {
             wantBooks,
             finishedBooks,
             wantCount,
-            finishedCount
+            finishedCount,
+            error: null
         }); 
     } catch (err) {
         console.log(err);
@@ -150,6 +160,7 @@ app.post('/search', async (req, res) => {
     console.log(bookName);
     try {
         const { wantBooks, finishedBooks } = await getDashboardData();
+        const { wantCount, finishedCount } = await getBookCounts();
         const result = await axios.get(`https://openlibrary.org/search.json?q=${bookName}`); 
         const firstFourResults = result.data.docs.slice(0, 4); 
         // console.log(firstFourResults);
@@ -161,10 +172,19 @@ app.post('/search', async (req, res) => {
             wantBooks,
             finishedBooks,
             firstFourResults, 
-            savedMap
+            wantCount,
+            finishedCount,
+            savedMap,
+            error: null
         }); 
     } catch (err) {
         console.log(err);
+        const { wantBooks, finishedBooks } = await getDashboardData();
+        res.render('index.ejs', {
+            wantBooks, 
+            finishedBooks,
+            error: "Book Not Found"
+        })
     }
 })
 

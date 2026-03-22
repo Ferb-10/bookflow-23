@@ -509,3 +509,10 @@
 .review-stars .star.active {
   color: #f8c601;
 }
+
+.error {
+    margin-top: 10px;
+    padding-left: 30px;
+    font-size: 20px;
+    color: red;
+}
