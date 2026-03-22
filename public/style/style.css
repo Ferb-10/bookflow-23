@@ -12,7 +12,6 @@
     height: 100vh;
 }
 
-/**************************** Sidebar ******************************/
 .sidebar {
     width: 350px;
     background: #fff;
@@ -74,7 +73,6 @@
     padding-right: 20px;
 }
 
-/* ************************************************************************************************************** */
 .main {
   flex: 1;
   overflow-y: auto;   
@@ -82,21 +80,10 @@
   background: #fafafa;
 }
 
-/**************************** Search-box ******************************/
-
 .search-box {
     width: 100%;
     height: 160px;
 }
-
-/* .search-box .content h2 {
-    font-size: 32px;
-}
-
-.search-box .content p {
-    font-size: 22px;
-    color: #A5A5A5;
-} */
 
 /* それぞれのcontent共有 */
 .content h2 {
@@ -107,7 +94,6 @@
     font-size: 22px;
     color: #A5A5A5;
 }
-/* それぞれのcontent共有 */
 
 .form {
     width: 100%;
@@ -151,8 +137,6 @@
     color: #000;
 }
 
-/*****************************************************************/
-/**************************** Search-result ****************************/
 .search-result-box {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
@@ -168,13 +152,15 @@
     gap: 8px;
     width: 95%;
     margin: 0 auto;
+    padding: 10px 0;
 }
 
 .grid-content {
     height: 300px;
     position: relative;
-    border-bottom: 1px solid #a5a5a568;
-    border-right: #00000020 solid 1px;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, .1); */
+    border-radius: 10px;
+    border: solid 1px #4a49496f;
 }
 
 .flex-column {
@@ -229,12 +215,10 @@
     cursor: pointer;
 }
 
-/* ************************************************************ */
-/* Dashboard want finish 共有 */
 .wanted-reading, .finished-reading {
     background-color: #fff;
     border-radius: 10px;
-    height: 444px;
+    /* height: 444px; */
     margin-top: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
 }
@@ -275,9 +259,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 120px;
+    /* height: 120px; */
     width: 95%;
-    margin: 0 auto 7px;
+    /* margin: 0 auto 7px; */
+    margin: 0 auto;
+    /* border-bottom: #dbd9d9 solid 1px; */
+    padding: 5px 0;
+}
+
+.container .card:not(:last-child) {
     border-bottom: #dbd9d9 solid 1px;
 }
 
@@ -361,9 +351,6 @@
 .hidden {
   display: none;
 }
-/* ************************************ */
-/* ************************************ */
-/* ************************************ */
 
 .book-detail {
     background-color: #fff;
@@ -407,26 +394,26 @@
 }
 
 .stars span{
-  display: flex;               /* 要素をフレックスボックスにする */
-  flex-direction: row-reverse; /* 星を逆順に並べる */
-  justify-content: flex-end;   /* 逆順なので、左寄せにする */
+  display: flex;               
+  flex-direction: row-reverse; 
+  justify-content: flex-end;   
 }
 
 .stars input[type='radio']{
-  display: none;               /* デフォルトのラジオボタンを非表示にする */
+  display: none;               
 }
 
 .stars label{
-  color: #D2D2D2;              /* 未選択の星をグレー色に指定 */
-  font-size: 30px;             /* 星の大きさを30pxに指定 */
-  padding: 0 5px;              /* 左右の余白を5pxに指定 */
-  cursor: pointer;             /* カーソルが上に乗ったときに指の形にする */
+  color: #D2D2D2;             
+  font-size: 30px;             
+  padding: 0 5px;              
+  cursor: pointer;             
 }
 
 .stars label:hover,
 .stars label:hover ~ label,
 .stars input[type='radio']:checked ~ label{
-  color: #F8C601;              /* 選択された星以降をすべて黄色にする */
+  color: #F8C601;             
 }
 
 .book-flex-container img {
@@ -457,7 +444,7 @@
 .note textarea::placeholder {
     font-size: 1.1rem;
 }
-/* ************************************** */
+
 .primary {
     position: absolute;
     bottom: 20px;
@@ -470,17 +457,13 @@
     padding-bottom: 10px;
 }
 
-/* ************************************** */
-
-/* *********************************************************** */
-.want-container {
+.want-container, .finish-container {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     border-radius: 10px;
     margin-top: 30px;
     width: 100%;
 }
-
 
 .menu2 {
     position: absolute;
@@ -509,12 +492,6 @@
   background: #f2f2f2;
 }
 
-/* *************************************************** */
-/* *************************************************** */
-/* *************************************************** */
-/* *************************************************** */
-
-/* ほし */
 .review-stars {
   display: flex;
   gap: 2px;

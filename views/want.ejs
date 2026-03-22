@@ -14,32 +14,15 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar">
-            <div class="logo">
-                <h1><img src="/img/icon.png" alt=""><span>Book</span>Flow</h1>
-            </div>
-            <div class="nav-items">
-                <div class="item">
-                    <a href="/"><span class="material-symbols-outlined"> search </span>Search & Home</a>
-                </div>
-                <div class="item">
-                    <a href="/want"><span class="material-symbols-outlined"> bookmark </span>Want to Read</a>
-                </div>
-                <div class="item">
-                    <a href="/review"><span class="material-symbols-outlined"> bookmark_star </span>Finished Reading</a>
-                </div>
-            </div>
-        </aside>
-
+        <%- include('partials/sidebar.ejs') %>
         <main class="main">
             <div class="content">
                 <h2>Want to Read</h2>
                 <p>Track your reading journey, from want-to-read to finished books.</p>
             </div>
-<!-- ********************************************************************************************************* -->
-<!-- reviewを押した時に表示される場合 -->
+            <!-- review section -->
             <% if (reviewBook) { %>
-            <form action="/want/<%= reviewBook.id %>/review" method="POST" class="review-setting book-detail">
+            <form action="/want/<%= reviewBook.id %>/review" method="POST" class="book-detail">
                 <a href="/want"><span class="material-symbols-outlined"> close </span></a>
                 <button type="submit" class="btn primary"><span class="material-symbols-outlined"> add_2 </span></button>
                 <div class="book-flex-container">
@@ -76,8 +59,7 @@
                 </div>
             </form>
             <% }; %>   
-<!-- ********************************************************************************************************* -->
-<!-- wantBookの一覧表示 -->
+            <!-- wantBookの一覧表示 -->
             <div class="want-container">
                 <div class="grid-container">
                     <% wantBooks.forEach(book => { %>
@@ -92,9 +74,7 @@
                         <div class="btns">
                             <button class="btn"><span class="material-symbols-outlined"> more_horiz </span></button>
                             <div class="menu2 hidden">
-                                <!-- review -->
                                 <a href="/want?review=<%= book.id %>">Review</a>
-                                <!-- delete -->
                                 <form action="/books/<%= book.id %>/Delete" method="POST">
                                     <input type="hidden" name="bookId" value="<%= book.id %>">
                                     <button type="submit">Delete</button>
@@ -105,7 +85,6 @@
                     <% });  %>       
                 </div>    
             </div>
-<!-- ****************************************************************************************************************** -->
         </main>
     </div>
 </body>

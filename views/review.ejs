@@ -14,30 +14,14 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar">
-            <div class="logo">
-                <h1><img src="/img/icon.png" alt=""><span>Book</span>Flow</h1>
-            </div>
-            <div class="nav-items">
-                <div class="item">
-                    <a href="/"><span class="material-symbols-outlined"> search </span>Search & Home</a>
-                </div>
-                <div class="item">
-                    <a href="/want"><span class="material-symbols-outlined"> bookmark </span>Want to Read</a>
-                </div>
-                <div class="item">
-                    <a href="/review"><span class="material-symbols-outlined"> bookmark_star </span>Finished Reading</a>
-                </div>
-            </div>
-        </aside>
-
+        <%- include('partials/sidebar.ejs') %>
         <main class="main">
             <div class="content">
                 <h2>Finished Reading</h2>
                 <p>Track your reading journey, from want-to-read to finished books.</p>
             </div>
-<!-- ****************************************************************************************************************** -->
- <!-- view を押した時に表示されるようにする -->
+
+            <!-- view section -->
             <% if(viewBook) { %>
             <div class="book-detail">
                 <a href="/review"><span class="material-symbols-outlined"> close </span></a>
@@ -61,10 +45,10 @@
                 </div>
             </div>
             <% } %>
-<!-- ****************************************************************************************************************** -->
-<!-- updateを押した時に表示する　　　wantのreviewから拾う -->
+
+            <!-- update section -->
             <% if (updateBook) { %>
-            <form action="/review/<%= updateBook.id %>/update" method="POST" class="review-setting book-detail">
+            <form action="/review/<%= updateBook.id %>/update" method="POST" class="book-detail">
                 <a href="/review"><span class="material-symbols-outlined">close</span></a>
                 <button type="submit" class="btn primary"><span class="material-symbols-outlined">add_2</span></button>
                 <div class="book-flex-container">
@@ -102,9 +86,8 @@
 
             </form>
             <% } %>
-<!-- ****************************************************************************************************************** -->
-<!-- finishedbookの一覧表示 -->
-            <div class="want-container">
+            <!-- finish一覧 -->
+            <div class="finish-container">
                 <div class="grid-container">
                     <% finishedBooks.forEach(book => { %>
                     <div class="grid-content">
@@ -135,8 +118,6 @@
                     <% }); %>   
                 </div>
             </div>
-
-<!-- ****************************************************************************************************************** -->
         </main>
     </div>
 </body>

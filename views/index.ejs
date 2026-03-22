@@ -14,24 +14,7 @@
 </head>
 <body>
     <div class="app">
-        <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
-        <aside class="sidebar">
-            <div class="logo">
-                <h1><img src="/img/icon.png" alt=""><span>Book</span>Flow</h1>
-            </div>
-            <div class="nav-items">
-                <div class="item">
-                    <a href="/"><span class="material-symbols-outlined"> search </span>Search & Home</a>
-                </div>
-                <div class="item">
-                    <a href="/want"><span class="material-symbols-outlined"> bookmark </span>Want to Read</a>
-                </div>
-                <div class="item">
-                    <a href="/review"><span class="material-symbols-outlined"> bookmark_star </span>Finished Reading</a>
-                </div>
-            </div>
-        </aside>
-        <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
+        <%- include('partials/sidebar.ejs') %>
         <main class="main">
             <div class="search-box">
                 <div class="content">
@@ -45,8 +28,7 @@
                     </form>
                 </div>
             </div>
-<!-- ********************************************************************************************************************** -->
- <!-- searchして結果を出力するときだけ表示 -->  
+        <!-- Search -->
         <% if (locals.firstFourResults) { %>    
             <div class="search-result-box">
                 <div class="grid-container">
@@ -84,19 +66,18 @@
                 </div>
             </div>
         <% }; %>
-<!-- ********************************************************************************************************************** -->
-            <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
+            <!-- want一覧 -->
             <div class="wanted-reading">
                 <div class="flex">
                     <h2>Want to Read <span>(<%= locals.wantCount %>)</span></h2>
                     <a href="/want">View All ></a>
                 </div>
                 <div class="container">
-                    <% wantBooks.forEach(book => { %>
+                <% wantBooks.forEach(book => { %>
                     <div class="card">
                         <div class="card-content">
                             <div class="cover">
-                                <img src="<%= book.cover_url || '/img/no-cover.png' %>" alt="">
+                                <img src="<%= book.cover_url || '/img/no-cover.png' %>" alt="book_cover">
                             </div>
                             <div class="contents">
                                 <h2><%= book.title %></h2>
@@ -106,9 +87,7 @@
                         <div class="book-item">
                             <button class="menu-btn"><span class="material-symbols-outlined"> more_horiz </span></button>
                             <div class="menu hidden">
-                                <!-- review -->
                                 <a href="/want?review=<%= book.id %>">Review</a>
-                                <!-- delete -->
                                 <form action="/books/<%= book.id %>/delete" method="POST">
                                     <input type="hidden" name="bookId" value="<%= book.id %>">
                                     <button type="submit">Delete</button>
@@ -116,11 +95,11 @@
                             </div>
                         </div>
                     </div>
-                    <% });  %>
+                <% });  %>
                 </div>
             </div>
-            <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
-
+            
+            <!-- finish一覧 -->
             <div class="finished-reading">
                 <div class="flex">
                     <h2>Finished-reading <span>(<%= locals.finishedCount %>)</span></h2>
@@ -131,7 +110,7 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="cover">
-                                <img src="<%= book.cover_url || '/img/no-cover.png' %>" alt="">
+                                <img src="<%= book.cover_url || '/img/no-cover.png' %>" alt="book_cover">
                             </div>
                             <div class="contents">
                                 <h2><%= book.title %></h2>
@@ -150,8 +129,6 @@
                         <div class="book-item">
                             <button class="menu-btn"><span class="material-symbols-outlined"> more_horiz </span></button>
                             <div class="menu hidden">
-                                <!-- <button>updeta</button>
-                                <button>delete</button> -->
                                 <a href="/review?view=<%= book.id %>">View</a>
                                 <a href="/review?update=<%= book.id %>">Update</a>
                                 <form action="/books/<%= book.id %>/delete" method="POST">
@@ -163,7 +140,6 @@
                     <% }) %>
                 </div>
             </div>
-            <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
         </main>
     </div>
 </body>
