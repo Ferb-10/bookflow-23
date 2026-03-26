@@ -19,7 +19,6 @@
                 <h2>Finished Reading</h2>
                 <p>Track your reading journey, from want-to-read to finished books.</p>
             </div>
-
             <!-- view section -->
             <% if(viewBook) { %>
             <div class="book-detail">
@@ -36,7 +35,7 @@
                             <% } %>
                         </div>
                     </div>
-                    <img src="<%= viewBook.cover_url || '/img/no-cover.png' %>" alt="">
+                    <img src="<%= viewBook.cover_url || '/img/no-cover.png' %>" alt="book_cover">
                 </div>
                 <div class="note">
                     <h2>Note:</h2>
@@ -44,7 +43,6 @@
                 </div>
             </div>
             <% } %>
-
             <!-- update section -->
             <% if (updateBook) { %>
             <form action="/review/<%= updateBook.id %>/update" method="POST" class="book-detail">
@@ -59,16 +57,12 @@
                             <span>
                                 <input id="r5" type="radio" name="review" value="5" <%= updateBook.review == 5 ? "checked" : "" %>>
                                 <label for="r5">★</label>
-
                                 <input id="r4" type="radio" name="review" value="4" <%= updateBook.review == 4 ? "checked" : "" %>>
                                 <label for="r4">★</label>
-
                                 <input id="r3" type="radio" name="review" value="3" <%= updateBook.review == 3 ? "checked" : "" %>>
                                 <label for="r3">★</label>
-
                                 <input id="r2" type="radio" name="review" value="2" <%= updateBook.review == 2 ? "checked" : "" %>>
                                 <label for="r2">★</label>
-
                                 <input id="r1" type="radio" name="review" value="1" <%= updateBook.review == 1 ? "checked" : "" %>>
                                 <label for="r1">★</label>
                             </span>
@@ -82,7 +76,6 @@
                     <h2>Note:</h2>
                     <textarea name="comment"><%= updateBook.comment %></textarea>
                 </div>
-
             </form>
             <% } %>
             <!-- finish一覧 -->
@@ -92,7 +85,7 @@
                     <div class="grid-content">
                         <div class="flex-column">
                             <div class="cover">
-                                <img src="<%= book.cover_url || '/img/no-cover.png' %>" alt="">
+                                <img src="<%= book.cover_url || '/img/no-cover.png' %>" alt="book_cover">
                             </div> 
                             <h2><%= book.title %></h2>
                             <p><%= book.author %></p>
@@ -124,23 +117,15 @@
     document.addEventListener("click", (e) => {
     const btn = e.target.closest(".btn");
     const allMenus = document.querySelectorAll(".menu_sub");
-
-  
     allMenus.forEach(menu => menu.classList.add("hidden"));
-
-  
     if (btn) {
         const menu = btn.nextElementSibling;
         menu.classList.toggle("hidden");
         }
     });
-
-
-
     const textarea = document.getElementById("autoTextarea");
-
     textarea.addEventListener("input", () => {
-    textarea.style.height = "auto";                 // 一旦リセット
+    textarea.style.height = "auto";                 
     textarea.style.height = textarea.scrollHeight + "px";
     });
 </script>
