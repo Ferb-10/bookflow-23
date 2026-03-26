@@ -99,7 +99,6 @@
                 <% });  %>
                 </div>
             </div>
-            
             <!-- finish一覧 -->
             <div class="finished-reading">
                 <div class="flex">
@@ -116,13 +115,10 @@
                             <div class="contents">
                                 <h2><%= book.title %></h2>
                                 <p><%= book.author %></p>
+                                <% const rating = Number(book.review) || 0 %>
                                 <div class="review-stars small">
                                     <% for(let i = 1; i <= 5; i++) { %>
-                                        <% if(i <= Number(book.review)) { %>
-                                            <span class="star active">★</span>
-                                        <% } else { %>
-                                            <span class="star">★</span>
-                                        <% } %>
+                                        <span class="star <%= i <= rating ? 'active' : '' %>">★</span>
                                     <% } %>
                                 </div>
                             </div>
@@ -148,11 +144,7 @@
     document.addEventListener("click", (e) => {
     const btn = e.target.closest(".menu-btn");
     const allMenus = document.querySelectorAll(".menu");
-
-  
     allMenus.forEach(menu => menu.classList.add("hidden"));
-
-  
     if (btn) {
         const menu = btn.nextElementSibling;
         menu.classList.toggle("hidden");
