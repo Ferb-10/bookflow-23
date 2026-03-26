@@ -465,7 +465,7 @@
     width: 100%;
 }
 
-.menu2 {
+.menu_sub {
     position: absolute;
     bottom: 100%;          
     right: 0;
@@ -476,7 +476,7 @@
     z-index: 10;
 }
 
-.menu2 button, .menu2 a {
+.menu_sub button, .menu_sub a {
   display: block;
   width: 100%;
   padding: 8px 12px;
@@ -488,7 +488,7 @@
   font-size: 15px;
 }
 
-.menu2 button:hover, .menu2 a:hover {
+.menu_sub button:hover, .menu_sub a:hover {
   background: #f2f2f2;
 }
 

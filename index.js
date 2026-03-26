@@ -19,9 +19,9 @@ const db = new pg.Client({
     database: process.env.DB_NAME, 
     password: process.env.DB_PASSWORD
 }); 
-
 db.connect(); 
 
+// index.ejs用　一覧関数
 async function getDashboardData() {
     const {rows: wantBooks} = await db.query(`SELECT id, title, author, cover_url FROM books WHERE status = 'want' ORDER BY id DESC LIMIT 3 `); 
     const {rows: finishedBooks} = await db.query(`SELECT id, title, author, cover_url, review FROM books WHERE status = 'finished' ORDER BY id DESC LIMIT 3 `); 
@@ -31,46 +31,34 @@ async function getDashboardData() {
 // 画像保存関数
 async function downloadImage(imageUrl, filename) {
     const dir = "public/covers";
-
-    // フォルダなければ作る
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
-
     const filePath = path.join(dir, filename);
-
     const response = await axios({
         url: imageUrl,
-        method: "GET",
-        responseType: "stream"
+        method: 'GET',
+        responseType: 'stream'
     });
-
     const writer = fs.createWriteStream(filePath);
-
     response.data.pipe(writer);
-
     return new Promise((resolve, reject) => {
-        writer.on("finish", () => resolve(`/covers/${filename}`));
-        writer.on("error", reject);
+        writer.on('finish', () => resolve(`/covers/${filename}`));
+        writer.on('error', reject);
     });
-}
+};
 
+// 件数カウント関数
 async function getBookCounts() {
-    const { rows: wantCountResult } = await db.query(
-        `SELECT COUNT(*) FROM books WHERE status = 'want'`
-    );
-    const { rows: finishedCountResult } = await db.query(
-        `SELECT COUNT(*) FROM books WHERE status = 'finished'`
-    );
-
+    const { rows: wantCountResult } = await db.query(`SELECT COUNT(*) FROM books WHERE status = 'want'`);
+    const { rows: finishedCountResult } = await db.query(`SELECT COUNT(*) FROM books WHERE status = 'finished'`);
     return {
         wantCount: wantCountResult[0].count,
         finishedCount: finishedCountResult[0].count
     };
-}
+};
 
-
-
+// index.ejs
 app.get('/', async (req, res) => {
     try {
         const { wantBooks, finishedBooks } = await getDashboardData();
@@ -88,8 +76,6 @@ app.get('/', async (req, res) => {
     };   
 }); 
 
-
-// *********************************************************************************************************
 // wantのページ
 app.get('/want', async (req, res) => {
     const reviewBookId = req.query.review || null; 
@@ -97,7 +83,7 @@ app.get('/want', async (req, res) => {
         const {rows: wantBooks} = await db.query(`SELECT id, title, author, cover_url FROM books WHERE status = 'want' ORDER BY id DESC`); 
         let reviewBook = null; 
         if (reviewBookId) {
-            const result = await db.query("SELECT * FROM books WHERE id = $1", [reviewBookId]); 
+            const result = await db.query(`SELECT * FROM books WHERE id = $1`, [reviewBookId]); 
             reviewBook = result.rows[0]; 
             console.log(reviewBook);
         }
@@ -111,60 +97,42 @@ app.get('/want', async (req, res) => {
     };   
 }); 
 
-
-// *********************************************************************************************************
 // reviewのページ
 app.get('/review', async (req, res) => {
     const viewBookId = req.query.view || null;
     const updateBookId = req.query.update || null; 
     try {
         const { rows: finishedBooks } = await db.query(`SELECT id, title, author, cover_url, review FROM books WHERE status = 'finished' ORDER BY id DESC`);
-        
-        // view
         let viewBook = null;
         if (viewBookId) {
-            const result = await db.query(
-                "SELECT * FROM books WHERE id = $1",
-                [viewBookId]
-            );
+            const result = await db.query(`SELECT * FROM books WHERE id = $1`,[viewBookId]);
             viewBook = result.rows[0];
         }
-
-        // updete
         let updateBook = null;
         if (updateBookId) {
-            const result = await db.query(
-                "SELECT * FROM books WHERE id = $1",
-                [updateBookId]
-            );
+            const result = await db.query(`SELECT * FROM books WHERE id = $1`,[updateBookId]);
             updateBook = result.rows[0];
         }
-
         res.render('review.ejs', {
             finishedBooks,
             viewBook,
             updateBook
         });
-
     } catch (err) {
         console.log(err);
         res.status(500).send('Review page error');
     }
 });
 
-
-// *********************************************************************************************************
 // 検索機能
 app.post('/search', async (req, res) => {
     const bookName = req.body.bookName; 
-    console.log(bookName);
     try {
         const { wantBooks, finishedBooks } = await getDashboardData();
         const { wantCount, finishedCount } = await getBookCounts();
         const result = await axios.get(`https://openlibrary.org/search.json?q=${bookName}`); 
         const firstFourResults = result.data.docs.slice(0, 4); 
-        // console.log(firstFourResults);
-        const {rows: savedBooks} = await db.query('SELECT work_id, status FROM books')
+        const {rows: savedBooks} = await db.query(`SELECT work_id, status FROM books`);
         const savedMap = new Map(
             savedBooks.map(book => [book.work_id, book.status])
         ); 
@@ -183,35 +151,26 @@ app.post('/search', async (req, res) => {
         res.render('index.ejs', {
             wantBooks, 
             finishedBooks,
-            error: "Book Not Found"
-        })
+            error: 'Book Not Found'
+        });
     }
-})
-
-// *********************************************************************************************************
+});
 
 // 本の追加
 app.post('/books', async (req, res) => {
     const {title, author, work_id, cover_edition_id, status} = req.body;
     try {
-        const existing = await db.query("SELECT status FROM books WHERE work_id = $1", [work_id]); 
+        const existing = await db.query(`SELECT status FROM books WHERE work_id = $1`, [work_id]); 
         if (existing.rows.length > 0) {
             return res.redirect('/')
         }
-
-        // ⭐ ここが追加ポイント
         let localCoverPath = null;
-
-
-
         if (cover_edition_id) {
             const coverUrl = `https://covers.openlibrary.org/b/olid/${cover_edition_id}.jpg`;
-            const filename = `${cover_edition_id}.jpg`; // 重複防止
+            const filename = `${cover_edition_id}.jpg`; 
             localCoverPath = await downloadImage(coverUrl, filename);
         }
-
-        // ⭐ DBにはローカルパスを保存
-        await db.query("INSERT INTO books (title, author, work_id, cover_edition_id, cover_url, status) VALUES ($1, $2, $3, $4, $5, $6)", [title, author, work_id, cover_edition_id, localCoverPath, status]); 
+        await db.query(`INSERT INTO books (title, author, work_id, cover_edition_id, cover_url, status) VALUES ($1, $2, $3, $4, $5, $6)`, [title, author, work_id, cover_edition_id, localCoverPath, status]); 
         res.redirect('/')
     } catch (err) {
         console.log(err);
@@ -219,13 +178,12 @@ app.post('/books', async (req, res) => {
     }
 }); 
 
-// review　post 
+// review機能 
 app.post('/want/:id/review', async (req, res) => {
     const bookId = req.params.id; 
     const {review, comment} = req.body; 
-    console.log(review, comment);
     try {
-        await db.query("UPDATE books SET status = 'finished', review = $1, comment = $2, review_date = CURRENT_DATE WHERE id = $3", [review, comment, bookId]); 
+        await db.query(`UPDATE books SET status = 'finished', review = $1, comment = $2, review_date = CURRENT_DATE WHERE id = $3`, [review, comment, bookId]); 
         res.redirect('/')
     } catch (err) {
         console.log(err);
@@ -233,63 +191,40 @@ app.post('/want/:id/review', async (req, res) => {
     }
 }); 
 
-// update post 
+// update機能
 app.post('/review/:id/update', async (req, res) => {
     const bookId = req.params.id;
     const review = req.body.review;
     const comment = req.body.comment;
-
     try {
-        await db.query(
-            `UPDATE books
-             SET review = $1, comment = $2
-             WHERE id = $3`,
-            [review, comment, bookId]
-        );
-
+        await db.query(`UPDATE books SET review = $1, comment = $2 WHERE id = $3`, [review, comment, bookId]);
         res.redirect('/review');
-
     } catch (err) {
         console.log(err);
-        res.status(500).send("Update error");
+        res.status(500).send('Update error');
     }
 });
 
-
-// delete
+// delete機能
 app.post("/books/:id/delete", async (req, res) => {
   const bookId = req.params.id;
   try {
-     // ① cover_url取得
-        const result = await db.query(
-            "SELECT cover_url FROM books WHERE id = $1",
-            [bookId]
-        );
-
+        const result = await db.query(`SELECT cover_url FROM books WHERE id = $1`, [bookId]);
         const coverUrl = result.rows[0]?.cover_url;
-
-        // ② ファイル削除（存在する場合のみ）
         if (coverUrl && coverUrl !== '/img/no-cover.png') {
             const filePath = path.join("public", coverUrl);
-
-            // ファイルが存在する場合のみ削除
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }
         }
-
-        await db.query("DELETE FROM books WHERE id = $1", [bookId]);
+        await db.query(`DELETE FROM books WHERE id = $1`, [bookId]);
         res.redirect('/')
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error deleting book");
-  }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error deleting book');
+    }
 });
-
-
-
-
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
-})
+});

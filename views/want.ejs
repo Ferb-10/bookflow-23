@@ -73,7 +73,7 @@
                         </div>
                         <div class="btns">
                             <button class="btn"><span class="material-symbols-outlined"> more_horiz </span></button>
-                            <div class="menu2 hidden">
+                            <div class="menu_sub hidden">
                                 <a href="/want?review=<%= book.id %>">Review</a>
                                 <form action="/books/<%= book.id %>/Delete" method="POST">
                                     <input type="hidden" name="bookId" value="<%= book.id %>">
@@ -91,7 +91,7 @@
 <script>
     document.addEventListener("click", (e) => {
     const btn = e.target.closest(".btn");
-    const allMenus = document.querySelectorAll(".menu2");
+    const allMenus = document.querySelectorAll(".menu_sub");
 
   
     allMenus.forEach(menu => menu.classList.add("hidden"));
